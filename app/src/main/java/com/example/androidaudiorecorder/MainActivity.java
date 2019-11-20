@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     String pathSave = "";
     MediaRecorder mediaRecorder;
     MediaPlayer mediaPlayer;
+    EditText repeatCount;
 
     final int REQUEST_PERMISSION_CODE = 1000;
 
@@ -42,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         btnRecord = (Button) findViewById(R.id.btnStartRecord);
         btnStop = (Button) findViewById(R.id.btnStop);
         btnStopRecord = (Button) findViewById(R.id.btnStopRecord);
-
+        repeatCount = (EditText) findViewById(R.id.repeatCount);
         //From Android M , you need to request Run-time permission
 
         btnRecord.setOnClickListener(new View.OnClickListener() {
@@ -81,6 +83,28 @@ public class MainActivity extends AppCompatActivity {
                 btnPlay.setEnabled(true);
                 btnRecord.setEnabled(true);
                 btnStop.setEnabled(false);
+
+                // play as many as repeatCount
+                String res = repeatCount.getText().toString();
+
+                mediaPlayer = new MediaPlayer();
+                try {
+                    if(!mediaPlayer.isPlaying()) {
+                        mediaPlayer.setDataSource(pathSave);
+                        mediaPlayer.prepare();
+                    } else{
+                        mediaPlayer.stop();
+                        mediaPlayer.reset();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                mediaPlayer.setLooping(true);
+                mediaPlayer.start();
+                int num = 0;
+                num++;
+                Toast.makeText(MainActivity.this, "Playing...", Toast.LENGTH_LONG).show();
+                //MediaPlayer.OnCompletionListener
             }
         });
 
@@ -159,4 +183,6 @@ public class MainActivity extends AppCompatActivity {
         return write_external_storage_result == PackageManager.PERMISSION_GRANTED &&
                 record_audio_result == PackageManager.PERMISSION_GRANTED;
     }
+
 }
+
