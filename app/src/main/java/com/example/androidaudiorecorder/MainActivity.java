@@ -2,8 +2,11 @@ package com.example.androidaudiorecorder;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -45,8 +48,19 @@ public class MainActivity extends AppCompatActivity {
         btnStop = (Button) findViewById(R.id.btnStop);
         btnStopRecord = (Button) findViewById(R.id.btnStopRecord);
         repeatCount = (EditText) findViewById(R.id.repeatCount);
-        //From Android M , you need to request Run-time permission
 
+        //create soundpool
+        SoundPool tmp = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            final SoundPool soundPool = new SoundPool.Builder().setMaxStreams(10).build();
+            tmp = soundPool;
+        } else {
+            final SoundPool soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 1);
+            tmp = soundPool;
+        }
+        final SoundPool soundPool = tmp;
+
+        //From Android M , you need to request Run-time permission
         btnRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,23 +100,36 @@ public class MainActivity extends AppCompatActivity {
 
                 // play as many as repeatCount
                 String res = repeatCount.getText().toString();
+                int num = Integer.parseInt(res) - 1;
+                if(num <= -1)
+                    num = 0;
+                final int cnt = num;
+//                mediaPlayer = new MediaPlayer();
+//                try {
+//                    if(!mediaPlayer.isPlaying()) {
+//                        mediaPlayer.setDataSource(pathSave);
+//                        mediaPlayer.prepare();
+//                    } else{
+//                        mediaPlayer.stop();
+//                        mediaPlayer.reset();
+//                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                mediaPlayer.setLooping(true);
+//                mediaPlayer.start();
 
-                mediaPlayer = new MediaPlayer();
-                try {
-                    if(!mediaPlayer.isPlaying()) {
-                        mediaPlayer.setDataSource(pathSave);
-                        mediaPlayer.prepare();
-                    } else{
-                        mediaPlayer.stop();
-                        mediaPlayer.reset();
+                //soundpool로 play
+                //soundpool사용 load
+                final int soundID = soundPool.load(pathSave, 1);
+                soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+                    @Override
+                    public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                        soundPool.play(soundID, 1, 1, 0, cnt, 1.0f);
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                mediaPlayer.setLooping(true);
-                mediaPlayer.start();
-                int num = 0;
-                num++;
+                });
+
+
                 Toast.makeText(MainActivity.this, "Playing...", Toast.LENGTH_LONG).show();
                 //MediaPlayer.OnCompletionListener
             }
@@ -141,6 +168,10 @@ public class MainActivity extends AppCompatActivity {
                     mediaPlayer.release();
                     setupMediaRecorder();
                 }
+
+                //soundpool release
+                soundPool.release();
+
             }
         });
 
