@@ -20,7 +20,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import java.io.IOException;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +34,16 @@ public class MainActivity extends AppCompatActivity {
 
     final int REQUEST_PERMISSION_CODE = 1000;
 
+    // 현재시간을 msec 으로 구한다.
+    long now = System.currentTimeMillis();
+    // 현재시간을 date 변수에 저장한다.
+    Date date = new Date(now);
+    // 시간을 나타냇 포맷을 정한다 ( yyyy/MM/dd 같은 형태로 변형 가능 )
+    SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH_mm_ss");
+    // nowDate 변수에 값을 저장한다.
+    String formatDate = sdfNow.format(date);
+
+    SoundPool soundPool;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
             final SoundPool soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 1);
             tmp = soundPool;
         }
-        final SoundPool soundPool = tmp;
+        soundPool = tmp;
 
         //From Android M , you need to request Run-time permission
         btnRecord.setOnClickListener(new View.OnClickListener() {
@@ -68,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                 if (checkPermissionFromDevice()) {
 
 
-                    pathSave = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + UUID.randomUUID().toString() + "_audio_record.3gp";
+                    pathSave = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "_audio_record.mp3";
                     setupMediaRecorder();
                     try {
                         mediaRecorder.prepare();
@@ -81,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                     btnPlay.setEnabled(false);
                     btnStop.setEnabled(false);
 
-                    Toast.makeText(MainActivity.this, "Recording...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, pathSave, Toast.LENGTH_SHORT).show();
                 } else {
                     requestPermissions();
                 }
@@ -96,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                 btnStopRecord.setEnabled(false);
                 btnPlay.setEnabled(true);
                 btnRecord.setEnabled(true);
-                btnStop.setEnabled(false);
+                btnStop.setEnabled(true);
 
                 // play as many as repeatCount
                 String res = repeatCount.getText().toString();
@@ -104,21 +115,6 @@ public class MainActivity extends AppCompatActivity {
                 if(num <= -1)
                     num = 0;
                 final int cnt = num;
-//                mediaPlayer = new MediaPlayer();
-//                try {
-//                    if(!mediaPlayer.isPlaying()) {
-//                        mediaPlayer.setDataSource(pathSave);
-//                        mediaPlayer.prepare();
-//                    } else{
-//                        mediaPlayer.stop();
-//                        mediaPlayer.reset();
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//                mediaPlayer.setLooping(true);
-//                mediaPlayer.start();
-
                 //soundpool로 play
                 //soundpool사용 load
                 final int soundID = soundPool.load(pathSave, 1);
@@ -131,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
 
 
                 Toast.makeText(MainActivity.this, "Playing...", Toast.LENGTH_LONG).show();
-                //MediaPlayer.OnCompletionListener
             }
         });
 
@@ -142,16 +137,25 @@ public class MainActivity extends AppCompatActivity {
                 btnStopRecord.setEnabled(false);
                 btnRecord.setEnabled(false);
 
-                mediaPlayer = new MediaPlayer();
-                try {
-                    mediaPlayer.setDataSource(pathSave);
-                    mediaPlayer.prepare();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                // play as many as repeatCount
+                String res = repeatCount.getText().toString();
+                int num = Integer.parseInt(res) - 1;
+                if(num <= -1)
+                    num = 0;
+                final int cnt = num;
+                //soundpool로 play
+                //soundpool사용 load
+                final int soundID = soundPool.load(pathSave, 1);
+                soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+                    @Override
+                    public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                        soundPool.play(soundID, 1, 1, 0, cnt, 1.0f);
+                    }
+                });
 
-                mediaPlayer.start();
-                Toast.makeText(MainActivity.this, "Playing...", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(MainActivity.this, "Playing...", Toast.LENGTH_LONG).show();
+
             }
         });
 
@@ -163,15 +167,10 @@ public class MainActivity extends AppCompatActivity {
                 btnRecord.setEnabled(true);
                 btnStop.setEnabled(false);
 
-                if (mediaPlayer != null) {
-                    mediaPlayer.stop();
-                    mediaPlayer.release();
-                    setupMediaRecorder();
-                }
 
                 //soundpool release
                 soundPool.release();
-
+                soundPool=null;
             }
         });
 
