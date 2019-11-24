@@ -9,6 +9,7 @@ import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -60,6 +62,15 @@ public class MainActivity extends AppCompatActivity {
         btnStopRecord = (Button) findViewById(R.id.btnStopRecord);
         repeatCount = (EditText) findViewById(R.id.repeatCount);
 
+        //폴더만들기
+        File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "AndroidRecorder");
+        // 폴더가 제대로 만들어졌는지 체크 ======
+        if (!dir.mkdirs()) {
+            Log.e("FILE", "Directory not created");
+        }else{
+            Toast.makeText(MainActivity.this, "폴더 생성 SUCCESS", Toast.LENGTH_SHORT).show();
+        }
+
         //create soundpool
         SoundPool tmp = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -77,9 +88,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (checkPermissionFromDevice()) {
-
-
-                    pathSave = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "_audio_record.mp3";
+                    //경로설정
+                    pathSave = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "AndroidRecorder/" + formatDate.replace('/', '_') +".mp3";
                     setupMediaRecorder();
                     try {
                         mediaRecorder.prepare();
