@@ -36,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
 
     final int REQUEST_PERMISSION_CODE = 1000;
 
+    //반복횟수
+    int cnt = 0;
+
     // 현재시간을 msec 으로 구한다.
     long now = System.currentTimeMillis();
     // 현재시간을 date 변수에 저장한다.
@@ -120,11 +123,16 @@ public class MainActivity extends AppCompatActivity {
                 btnStop.setEnabled(true);
 
                 // play as many as repeatCount
-                String res = repeatCount.getText().toString();
+                String res;
+                if(repeatCount.getText().toString().isEmpty())
+                    res = "1";
+                else
+                    res = repeatCount.getText().toString();
+
                 int num = Integer.parseInt(res) - 1;
                 if(num <= -1)
                     num = 0;
-                final int cnt = num;
+                cnt = num;
                 //soundpool로 play
                 //soundpool사용 load
                 final int soundID = soundPool.load(pathSave, 1);
@@ -147,19 +155,15 @@ public class MainActivity extends AppCompatActivity {
                 btnStopRecord.setEnabled(false);
                 btnRecord.setEnabled(false);
 
-                // play as many as repeatCount
-                String res = repeatCount.getText().toString();
-                int num = Integer.parseInt(res) - 1;
-                if(num <= -1)
-                    num = 0;
-                final int cnt = num;
                 //soundpool로 play
                 //soundpool사용 load
                 final int soundID = soundPool.load(pathSave, 1);
                 soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
                     @Override
                     public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                        soundPool.play(soundID, 1, 1, 0, cnt, 1.0f);
+                        int a = soundPool.play(soundID, 1, 1, 0, cnt, 1.0f);
+                        soundPool.
+                        soundPool.stop(a);
                     }
                 });
 
