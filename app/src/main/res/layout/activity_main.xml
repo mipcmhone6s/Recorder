@@ -8,39 +8,86 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:text="RECORD AREA"
+        android:text="KEY AREA"
         android:textSize="24sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <Button
-        android:id="@+id/btnStartRecord"
+        android:id="@+id/btnStartRecord1"
         android:text="RECORD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <Button
-        android:id="@+id/btnStopRecord"
+        android:id="@+id/btnStopRecord1"
         android:text="STOP RECORD AND PLAY"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
 
     <TextView
-        android:text="PLAY AREA"
+        android:text="PLAY"
         android:textSize="24sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <Button
-        android:id="@+id/btnPlay"
+        android:id="@+id/btnPlay1"
         android:text="PLAY"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <Button
-        android:id="@+id/btnStop"
+        android:id="@+id/btnStop1"
         android:text="STOP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:text="PRACTICE AREA"
+        android:textSize="24sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btnStartRecord2"
+        android:text="RECORD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btnStopRecord2"
+        android:text="STOP RECORD AND PLAY"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+    <TextView
+        android:text="PLAY"
+        android:textSize="24sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btnPlay2"
+        android:text="PLAY"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btnStop2"
+        android:text="STOP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:text="PLAY ALL"
+        android:textSize="24sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btnPlayAll"
+        android:text="PLAY ALL"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
