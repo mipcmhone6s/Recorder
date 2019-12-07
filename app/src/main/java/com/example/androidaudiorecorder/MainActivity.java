@@ -145,19 +145,16 @@ public class MainActivity extends AppCompatActivity {
                 mediaPlayer.start();
 
                 Toast.makeText(MainActivity.this, "전체 길이 : " + mediaPlayer.getDuration() + " 현재 : " + mediaPlayer.getCurrentPosition(), Toast.LENGTH_LONG).show();
-                cnt = 0;
                 mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mp) {
-                        if (cnt < Repnum) {
-                            mediaPlayer.start();
-                            cnt += 1;
-                        } else {
-
+                        if (mediaPlayer != null) {
+                            mediaPlayer.stop();
+                            mediaPlayer.release();
+                            mediaPlayer = null;
                         }
                     }
                 });
-
             }
         });
 
@@ -245,19 +242,16 @@ public class MainActivity extends AppCompatActivity {
                 mediaPlayer.start();
 
                 Toast.makeText(MainActivity.this, "전체 길이 : " + mediaPlayer.getDuration() + " 현재 : " + mediaPlayer.getCurrentPosition(), Toast.LENGTH_LONG).show();
-                cnt = 0;
                 mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mp) {
-                        if (cnt < Repnum) {
-                            mediaPlayer.start();
-                            cnt += 1;
-                        } else {
-
+                        if (mediaPlayer != null) {
+                            mediaPlayer.stop();
+                            mediaPlayer.release();
+                            mediaPlayer = null;
                         }
                     }
                 });
-
             }
         });
 
@@ -290,10 +284,14 @@ public class MainActivity extends AppCompatActivity {
                 mediaPlayer.start();
 
                 Toast.makeText(MainActivity.this, "전체 길이 : " + mediaPlayer.getDuration() + " 현재 : " + mediaPlayer.getCurrentPosition(), Toast.LENGTH_LONG).show();
-                cnt = 0;
                 mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mp) {
+                        if (mediaPlayer != null) {
+                            mediaPlayer.stop();
+                            mediaPlayer.release();
+                            mediaPlayer = null;
+                        }
                         mediaPlayer = new MediaPlayer();
                         try {
                             mediaPlayer.setDataSource(pathSave2);
@@ -302,7 +300,17 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         mediaPlayer.start();
-                        cnt += 1;
+
+                        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                if (mediaPlayer != null) {
+                                    mediaPlayer.stop();
+                                    mediaPlayer.release();
+                                    mediaPlayer = null;
+                                }
+                            }
+                        });
                     }
                 });
 
