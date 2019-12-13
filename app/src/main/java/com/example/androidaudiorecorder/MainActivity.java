@@ -110,11 +110,16 @@ public class MainActivity extends AppCompatActivity {
         btnStopRecord1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mediaRecorder.stop();
                 btnStopRecord1.setEnabled(false);
                 btnPlay1.setEnabled(true);
                 btnRecord1.setEnabled(true);
                 btnStop1.setEnabled(true);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                mediaRecorder.stop();
             }
         });
 
@@ -165,7 +170,6 @@ public class MainActivity extends AppCompatActivity {
                 btnPlay1.setEnabled(true);
                 btnRecord1.setEnabled(true);
                 btnStop1.setEnabled(false);
-
                 if (mediaPlayer != null) {
                     mediaPlayer.stop();
                     mediaPlayer.release();
@@ -199,19 +203,22 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     requestPermissions();
                 }
-
             }
         });
 
         btnStopRecord2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mediaRecorder.stop();
                 btnStopRecord2.setEnabled(false);
                 btnPlay2.setEnabled(true);
                 btnRecord2.setEnabled(true);
                 btnStop2.setEnabled(true);
-
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                mediaRecorder.stop();
             }
         });
 

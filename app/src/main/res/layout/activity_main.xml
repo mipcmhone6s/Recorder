@@ -91,16 +91,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <TextView
-        android:text="REPEAT COUNT"
-        android:textSize="24sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
 
-    <EditText
-        android:id="@+id/repeatCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="repeat"
-        android:inputType="number"/>
 </LinearLayout>
