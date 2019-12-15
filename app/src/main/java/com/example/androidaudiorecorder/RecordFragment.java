@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -38,14 +37,19 @@ public class RecordFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     //Declare Variables
     Button btnRecord1, btnStopRecord1, btnPlay1, btnStop1, btnRecord2, btnStopRecord2, btnPlay2, btnStop2, btnPlayAll;
-    String pathSave1 = "";
-    String pathSave2 = "";
+    private String pathSave1 = "";
+    private String pathSave2 = "";
+    private String fileName1 = "";
+    private String fileName2 = "";
     MediaRecorder mediaRecorder;
     MediaPlayer mediaPlayer;
-
+    private DBHelper database;
     final int REQUEST_PERMISSION_CODE = 1000;
     final int RECORDER1 = 1;
     final int RECORDER2 = 2;
+
+    private static final String LOG_TAG = "RecordFragment";
+
     //반복횟수
     int Repnum = 0;
     int cnt = 0;
@@ -97,6 +101,7 @@ public class RecordFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        database = new DBHelper(getActivity());
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -140,7 +145,8 @@ public class RecordFragment extends Fragment {
 
                 if (checkPermissionFromDevice()) {
                     //경로설정
-                    pathSave1 = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "AndroidRecorder/" + "KEY_" + formatDate.replace('/', '_') + ".mp3";
+                    pathSave1 = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "AndroidRecorder/" + "KEY_" + (database.getCount() + 1) + ".mp3";
+                    fileName1 = "KEY_" + (database.getCount() + 1) + ".mp3";
                     setupMediaRecorder(RECORDER1);
                     try {
                         mediaRecorder.prepare();
@@ -172,6 +178,12 @@ public class RecordFragment extends Fragment {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                }
+                try {
+                    database.addRecording(fileName1, pathSave1, 0);
+
+                } catch (Exception e){
+                    Log.e(LOG_TAG, "exception", e);
                 }
                 mediaRecorder.stop();
             }
@@ -236,7 +248,8 @@ public class RecordFragment extends Fragment {
 
                 if (checkPermissionFromDevice()) {
                     //경로설정
-                    pathSave2 = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "AndroidRecorder/" + formatDate.replace('/', '_') + ".mp3";
+                    pathSave2 = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "AndroidRecorder/" + "PRACTICE_" + (database.getCount() + 1) + ".mp3";
+                    fileName2 = "PRACTICE_" + (database.getCount() + 1) + ".mp3";
                     setupMediaRecorder(RECORDER2);
                     try {
                         mediaRecorder.prepare();
@@ -267,6 +280,12 @@ public class RecordFragment extends Fragment {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                }
+                try {
+                    database.addRecording(fileName2, pathSave2, 0);
+
+                } catch (Exception e){
+                    Log.e(LOG_TAG, "exception", e);
                 }
                 mediaRecorder.stop();
             }

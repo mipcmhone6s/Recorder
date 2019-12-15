@@ -2,16 +2,17 @@ package com.example.androidaudiorecorder;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.FileObserver;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.androidaudiorecorder.dummy.DummyContent;
 import com.example.androidaudiorecorder.dummy.DummyContent.DummyItem;
 
 /**
@@ -22,10 +23,13 @@ import com.example.androidaudiorecorder.dummy.DummyContent.DummyItem;
  */
 public class ItemFragment extends Fragment {
 
+    private ItemRecyclerViewAdapter mItemRecyclerViewAdapter;
+
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
+
     private OnListFragmentInteractionListener mListener;
 
     /**
@@ -51,27 +55,33 @@ public class ItemFragment extends Fragment {
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            observer.startWatching();
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_item_list, container, false);
+        View v = inflater.inflate(R.layout.fragment_item_list, container, false);
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new MyItemRecyclerViewAdapter(DummyContent.ITEMS, mListener));
-        }
-        return view;
+        RecyclerView mRecyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
+        mRecyclerView.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+
+        //newest to oldest order
+        llm.setReverseLayout(true);
+        llm.setStackFromEnd(true);
+
+        mRecyclerView.setLayoutManager(llm);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        mItemRecyclerViewAdapter = new ItemRecyclerViewAdapter(getActivity(), llm);
+        mRecyclerView.setAdapter(mItemRecyclerViewAdapter);
+        return v;
     }
+
 
 
     @Override
@@ -84,6 +94,7 @@ public class ItemFragment extends Fragment {
                     + " must implement OnListFragmentInteractionListener");
         }
     }
+
 
     @Override
     public void onDetach() {
@@ -105,4 +116,18 @@ public class ItemFragment extends Fragment {
         // TODO: Update argument type and name
         void onListFragmentInteraction(DummyItem item);
     }
+
+    FileObserver observer =
+            new FileObserver(android.os.Environment.getExternalStorageDirectory().toString() + "AndroidRecorder") {
+                //set up a file observer to watch this directory on sd card
+                @Override
+                public void onEvent(int event, String file) {
+                    if (event == FileObserver.DELETE) {
+                        //user deletes a recording file out of the app
+
+                        String filePath = android.os.Environment.getExternalStorageDirectory().toString() + "AndroidRecorder" + file + "]";
+                        Log.d("ItemFragment", "File deleted [" + android.os.Environment.getExternalStorageDirectory().toString() + "AndroidRecorder" + file + "]");
+                    }
+                }
+            };
 }

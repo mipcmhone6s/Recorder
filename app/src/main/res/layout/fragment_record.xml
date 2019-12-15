@@ -21,7 +21,7 @@
 
     <Button
         android:id="@+id/btnStopRecord1"
-        android:text="STOP RECORD AND PLAY"
+        android:text="STOP RECORD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -57,7 +57,7 @@
 
     <Button
         android:id="@+id/btnStopRecord2"
-        android:text="STOP RECORD AND PLAY"
+        android:text="STOP RECORD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
